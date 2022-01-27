@@ -2,7 +2,8 @@ import yfinance as yf
 from fastapi import APIRouter
 from fastapi import status
 
-from models.stocks import StockInfo, SplitRatioRequestBody
+from trader_api.common import dataclass_converter
+from trader_api.models.stocks import SplitRatioRequestBody, StockInfo
 
 router = APIRouter(
     prefix='/stocks',
@@ -20,6 +21,8 @@ def read_stocks_ticker(ticker: str):
 
     ticker_data = yf.Ticker(ticker)
     stock_info = StockInfo.from_yfinance(ticker_data.info)
+    stock_info = dataclass_converter.asdict(stock_info)
+
     return {'result': stock_info}
 
 
